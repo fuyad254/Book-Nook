@@ -117,7 +117,7 @@ export default function AddBookPage() {
   const labelStyle = "mb-1 block text-[10px] font-medium text-[#d1d9d2]";
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-green-950 via-emerald-900 to-green-950 px-4 py-12 sm:py-16">
+    <section className="min-h-screen bg-linear-to-br from-green-950 via-emerald-900 to-green-950 px-4 py-12 sm:py-16">
       <div className="mx-auto w-full max-w-3xl">
         {/* Heading */}
         <div className="mb-8 text-center">
@@ -284,9 +284,10 @@ export default function AddBookPage() {
             <div className="sm:col-span-2">
               <button
                 type="submit"
+                disabled={uploading}
                 className="w-full rounded-md bg-[#91c99e] py-2 text-[11px] font-semibold text-[#102017] transition hover:bg-[#a5d9af] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Add Book
+                {uploading ? "Uploading..." : "Add Book"}
               </button>
             </div>
           </form>

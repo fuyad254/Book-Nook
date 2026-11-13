@@ -1,4 +1,5 @@
-"use cache"
+// "use cache"
+'use client'
 import Image from "next/image";
 import Link from "next/link";
 import logo from "@/assets/logo.png";
@@ -43,8 +44,8 @@ const socialLinks = [
   },
 ];
 
-const Footer = async() => {
-  const currentYear = new Date().getFullYear();
+// const currentYear = new Date().getFullYear();
+const Footer = () => {
 
   return (
     <footer className="relative overflow-hidden border-t border-emerald-200/15 bg-linear-to-r from-green-950 via-emerald-950 to-green-950 text-emerald-100">
@@ -211,7 +212,7 @@ const Footer = async() => {
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-emerald-100/50">
-            © {currentYear}{" "}
+            © {}{" "}
             <span className="font-semibold text-emerald-300">
               Book Nook
             </span>
