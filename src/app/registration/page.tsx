@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,7 +22,7 @@ const RegisterPage = () => {
     passwordRules.lowercase &&
     passwordRules.minLength;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!isPasswordValid) {
@@ -33,12 +34,21 @@ const RegisterPage = () => {
 
     const formData = new FormData(e.currentTarget);
 
-    const userData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      photoURL: formData.get("photoURL"),
-      password,
-    };
+    const user = Object.fromEntries(formData.entries()) as {
+      name: string;
+      email: string;
+      password: string;
+      photoURL: string;
+    }
+
+    const {data, error}= await authClient.signUp.email({
+        name: user.name,
+        photoURL: user.photoURL,
+        email: user.email,
+        password: user.password,
+
+    });
+
 
     console.log("Registration Data:", userData);
 

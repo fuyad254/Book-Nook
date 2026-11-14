@@ -14,102 +14,82 @@ export default function AddBookPage() {
   const [error, setError] = useState("");
 
   // Replace these values with your authenticated user's data.
-  const currentUser = {
-    name: "Your Name",
-    email: "your@email.com",
+
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+
+  //   if (!file) return;
+
+  //   if (!file.type.startsWith("image/")) {
+  //     setError("Please select a valid image file.");
+  //     return;
+  //   }
+
+  //   if (file.size > 5 * 1024 * 1024) {
+  //     setError("Image size must be less than 5MB.");
+  //     return;
+  //   }
+
+  //   setError("");
+  //   setImage(file);
+  //   setPreview(URL.createObjectURL(file));
+  // };
+
+  // const uploadImage = async (file: File) => {
+  //   const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+
+  //   if (!apiKey) {
+  //     throw new Error("ImgBB API key is missing.");
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("image", file);
+
+  //   const response = await fetch(
+  //     `https://api.imgbb.com/1/upload?key=${apiKey}`,
+  //     {
+  //       method: "POST",
+  //       body: formData,
+  //     },
+  //   );
+
+  //   const result = await response.json();
+
+  //   if (!response.ok || !result.success) {
+  //     throw new Error("Image upload failed.");
+  //   }
+
+  //   return result.data.url as string;
+  // };
+
+  
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.currentTarget);
+
+  const book = Object.fromEntries(formData.entries()) as {
+    title: string;
+    author: string;
+    category: string;
+    copies: string;
+    image: string,
+    description: string;
+    name: string;
+    email: string;
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setError("Please select a valid image file.");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5MB.");
-      return;
-    }
-
-    setError("");
-    setImage(file);
-    setPreview(URL.createObjectURL(file));
-  };
-
-  const uploadImage = async (file: File) => {
-    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-
-    if (!apiKey) {
-      throw new Error("ImgBB API key is missing.");
-    }
-
-    const formData = new FormData();
-    formData.append("image", file);
-
-    const response = await fetch(
-      `https://api.imgbb.com/1/upload?key=${apiKey}`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-      throw new Error("Image upload failed.");
-    }
-
-    return result.data.url as string;
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-
-    try {
-      setUploading(true);
-
-      let imageUrl = "";
-
-      if (image) {
-        imageUrl = await uploadImage(image);
-      } else {
-        setError("Please upload a book image.");
-        return;
-      }
-
-      const bookData = {
-        title: formData.get("title"),
-        author: formData.get("author"),
-        category: formData.get("category"),
-        image: imageUrl,
-        description: formData.get("description"),
-        userName: currentUser.name,
-        userEmail: currentUser.email,
-      };
-
-      console.log("New Book:", bookData);
-
-      // Send bookData to your backend/database here.
-
-      alert("Book image uploaded successfully!");
-
-      form.reset();
-      setImage(null);
-      setPreview("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
-    } finally {
-      setUploading(false);
-    }
-  };
+  const res = await fetch('http://localhost:5000/add-book', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(book)
+  })
+ const data= res.json()
+ console.log(data);
+};
+  
 
   const inputStyle =
     "w-full rounded-md border border-[#303a34] bg-[#19221d] px-2 py-1.5 text-[11px] text-[#dce5de] outline-none placeholder:text-[#758078] focus:border-[#91c99e]";
@@ -209,21 +189,23 @@ export default function AddBookPage() {
             {/* Book Image */}
             <div className="sm:col-span-2">
               <label htmlFor="image" className={labelStyle}>
-                Book Image
+                Book Image Url
               </label>
 
               <input
                 ref={fileInputRef}
                 id="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className={`${inputStyle} file:mr-2 file:border-0 file:bg-transparent file:text-[10px] file:text-[#dce5de]`}
+                name="image"
+                
+                // onChange={handleImageChange}
+                className={`${inputStyle}`}
               />
 
               {preview && (
                 <Image
                   src={preview}
+                  width={50}
+                  height={50}
                   alt="Book preview"
                   className="mt-2 h-24 w-20 rounded-md border border-[#303a34] object-cover"
                 />
@@ -253,9 +235,10 @@ export default function AddBookPage() {
               <input
                 id="userName"
                 type="text"
-                value={currentUser.name}
-                readOnly
-                className={`${inputStyle} cursor-not-allowed`}
+                name="name"
+                // value={currentUser.name}
+                // readOnly
+                className={`${inputStyle}`}
               />
             </div>
 
@@ -267,9 +250,10 @@ export default function AddBookPage() {
               <input
                 id="userEmail"
                 type="email"
-                value={currentUser.email}
-                readOnly
-                className={`${inputStyle} cursor-not-allowed`}
+                name="email"
+                // value={currentUser.email}
+                // readOnly
+                className={`${inputStyle}`}
               />
             </div>
 
