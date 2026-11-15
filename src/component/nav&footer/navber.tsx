@@ -5,13 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import logo from "@/assets/logo.png";
+import { authClient } from "@/lib/auth-client";
+import UserInformationPage from "./userInformation";
 
 const links = [
   { label: "Home", href: "/" },
   { label: "All Books", href: "/all-books" },
-  { label: "Add Book", href: "/add-book" },
-  { label: "My Books", href: "/my-books" },
-  { label: "My Borrows", href: "/my-borrows" },
+  { label: "Add Book", href: "/add-book", authOnly: true },
+  { label: "My Books", href: "/my-books", authOnly: true },
+  { label: "My Borrows", href: "/my-borrows", authOnly: true },
 ];
 
 const isActive = (pathname: string, href: string) =>
@@ -22,6 +24,11 @@ const isActive = (pathname: string, href: string) =>
 const Navbar = () => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const { data: session, isPending } = authClient.useSession();
+
+  const user = session?.user;
+  const visibleLinks = links.filter((link) => !link.authOnly || user);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-emerald-200/15 bg-linear-to-r from-green-950/85 via-emerald-900/70 to-green-950/85 shadow-[0_8px_32px_rgba(2,44,34,0.35)] backdrop-blur-xl backdrop-saturate-150">
@@ -52,7 +59,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <ul className="hidden items-center gap-1 md:flex">
-          {links.map((link) => {
+          {visibleLinks.map((link) => {
             const active = isActive(pathname, link.href);
 
             return (
@@ -77,23 +84,32 @@ const Navbar = () => {
           })}
         </ul>
 
-        {/* Desktop Auth Buttons + Mobile Toggle */}
+        {/* Auth Area + Mobile Toggle */}
         <div className="flex shrink-0 items-center gap-2">
-          <div className="hidden items-center gap-2 md:flex">
-            <Link
-              href="/login"
-              className="rounded-full border border-emerald-200/25 px-4 py-2 text-sm font-semibold text-emerald-50 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-300/10"
-            >
-              Log In
-            </Link>
+          {isPending ? (
+            <span
+              aria-hidden="true"
+              className="h-10 w-10 animate-pulse rounded-xl bg-emerald-300/10"
+            />
+          ) : user ? (
+            <UserInformationPage user={user} />
+          ) : (
+            <div className="hidden items-center gap-2 md:flex">
+              <Link
+                href="/login"
+                className="rounded-full border border-emerald-200/25 px-4 py-2 text-sm font-semibold text-emerald-50 transition-all duration-200 hover:border-emerald-200/50 hover:bg-emerald-300/10"
+              >
+                Log In
+              </Link>
 
-            <Link
-              href="/registration"
-              className="rounded-full bg-emerald-300 px-5 py-2 text-sm font-semibold text-green-950 shadow-md shadow-emerald-950/20 transition-all duration-200 hover:bg-emerald-200 hover:shadow-emerald-300/20"
-            >
-              Register
-            </Link>
-          </div>
+              <Link
+                href="/registration"
+                className="rounded-full bg-emerald-300 px-5 py-2 text-sm font-semibold text-green-950 shadow-md shadow-emerald-950/20 transition-all duration-200 hover:bg-emerald-200 hover:shadow-emerald-300/20"
+              >
+                Register
+              </Link>
+            </div>
+          )}
 
           {/* Mobile Menu Button */}
           <button
@@ -130,7 +146,7 @@ const Navbar = () => {
           className="border-t border-emerald-200/10 bg-green-950/95 backdrop-blur-xl md:hidden"
         >
           <ul className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3 sm:px-6">
-            {links.map((link) => {
+            {visibleLinks.map((link) => {
               const active = isActive(pathname, link.href);
 
               return (
@@ -151,22 +167,26 @@ const Navbar = () => {
               );
             })}
 
-            {/* Mobile Auth Buttons */}
-            <li className="mt-3 grid grid-cols-2 gap-3 border-t border-emerald-200/10 pt-4">
-              <Link
-                href="/login"
-                className="rounded-full border border-emerald-200/25 px-4 py-3 text-center text-sm font-semibold text-emerald-50 transition-colors hover:bg-emerald-300/10"
-              >
-                Log In
-              </Link>
+            {/* Mobile Auth Buttons (guests only) */}
+            {!user && (
+              <li className="mt-3 grid grid-cols-2 gap-3 border-t border-emerald-200/10 pt-4">
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="rounded-full border border-emerald-200/25 px-4 py-3 text-center text-sm font-semibold text-emerald-50 transition-colors hover:bg-emerald-300/10"
+                >
+                  Log In
+                </Link>
 
-              <Link
-                href="/Registration"
-                className="rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-green-950 transition-colors hover:bg-emerald-200"
-              >
-                Register
-              </Link>
-            </li>
+                <Link
+                  href="/registration"
+                  onClick={() => setOpen(false)}
+                  className="rounded-full bg-emerald-300 px-4 py-3 text-center text-sm font-semibold text-green-950 transition-colors hover:bg-emerald-200"
+                >
+                  Register
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
       )}

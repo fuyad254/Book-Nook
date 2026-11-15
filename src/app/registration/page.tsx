@@ -3,13 +3,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { authClient } from "@/lib/auth-client";
 
 const RegisterPage = () => {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const passwordRules = {
     uppercase: /[A-Z]/.test(password),
@@ -22,7 +27,7 @@ const RegisterPage = () => {
     passwordRules.lowercase &&
     passwordRules.minLength;
 
-  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!isPasswordValid) {
@@ -31,28 +36,38 @@ const RegisterPage = () => {
     }
 
     setPasswordError("");
+    setSubmitError("");
+    setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    const user = Object.fromEntries(formData.entries()) as {
-      name: string;
-      email: string;
-      password: string;
-      photoURL: string;
-    }
+      const user = Object.fromEntries(formData.entries()) as {
+        name: string;
+        photoURL: string;
+        email: string;
+        password: string;
+      };
 
-    const {data, error}= await authClient.signUp.email({
+      const { error } = await authClient.signUp.email({
         name: user.name,
-        photoURL: user.photoURL,
+        image: user.photoURL,
         email: user.email,
         password: user.password,
+      });
 
-    });
+      if (error) {
+        setSubmitError(
+          error.message || "Could not create your account. Please try again.",
+        );
+        return;
+      }
 
-
-    console.log("Registration Data:", userData);
-
-    // Connect your registration API or Firebase here.
+      router.replace("/");
+      router.refresh();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -232,12 +247,23 @@ const RegisterPage = () => {
             )}
           </div>
 
+          {/* Submit Error */}
+          {submitError && (
+            <p
+              role="alert"
+              className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+            >
+              {submitError}
+            </p>
+          )}
+
           {/* Register Button */}
           <button
             type="submit"
-            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-300 px-5 py-3.5 text-sm font-bold text-green-950 shadow-lg shadow-emerald-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-emerald-300/20 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200 focus-visible:ring-offset-2 focus-visible:ring-offset-green-950"
+            disabled={isSubmitting}
+            className="group cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-300 px-5 py-3.5 text-sm font-bold text-green-950 shadow-lg shadow-emerald-950/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-200 hover:shadow-emerald-300/20 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-200 focus-visible:ring-offset-2 focus-visible:ring-offset-green-950 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
           >
-            Create Account
+            {isSubmitting ? "Creating Account..." : "Create Account"}
 
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="size-4 transition-transform duration-200 group-hover:translate-x-1">
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -256,7 +282,7 @@ const RegisterPage = () => {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-emerald-200/20 bg-white/5 px-5 py-3 text-sm font-semibold text-emerald-50 transition-all duration-300 hover:border-emerald-200/40 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50"
+          className="flex cursor-pointer w-full items-center justify-center gap-3 rounded-xl border border-emerald-200/20 bg-white/5 px-5 py-3 text-sm font-semibold text-emerald-50 transition-all duration-300 hover:border-emerald-200/40 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/50"
         >
           <FcGoogle className="h-5 w-5 shrink-0" />
           Continue with Google
@@ -267,8 +293,8 @@ const RegisterPage = () => {
           <p className="text-sm text-emerald-100/60">
             Already have an account?{" "}
             <Link
-              href="/signin"
-              className="font-bold text-emerald-300 transition-colors hover:text-emerald-200"
+              href="/login"
+              className="font-bold cursor-pointer text-emerald-300 transition-colors hover:text-emerald-200"
             >
               Login Now
             </Link>

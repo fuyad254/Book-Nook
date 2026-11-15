@@ -107,7 +107,7 @@ const Banner = () => {
                   </p>
 
                   <Link
-                    href="/allbooks"
+                    href="/all-books"
                     className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#91c99e] px-6 py-3 text-sm font-semibold text-[#102017] shadow-lg shadow-black/20 transition duration-300 hover:-translate-y-1 hover:bg-[#a5d9af]"
                   >
                     Browse Books

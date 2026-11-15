@@ -2,21 +2,48 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
-  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
+    setError("");
+    setIsSubmitting(true);
 
-    console.log({ email, password });
+    try {
+      const formData = new FormData(e.currentTarget);
 
-    // এখানে তোমার login authentication logic যুক্ত করবে
+      const user = Object.fromEntries(formData.entries()) as {
+        email: string;
+        password: string;
+      };
+
+      const { error: signInError } = await authClient.signIn.email({
+        email: user.email,
+        password: user.password,
+      });
+
+      if (signInError) {
+        setError(signInError.message || "Invalid email or password.");
+        return;
+      }
+
+      // The proxy adds ?next= when it redirects unauthenticated users here.
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.replace(next && next.startsWith("/") ? next : "/");
+      router.refresh();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -96,12 +123,23 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Login Error */}
+          {error && (
+            <p
+              role="alert"
+              className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+            >
+              {error}
+            </p>
+          )}
+
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full rounded-xl bg-emerald-500 py-3 font-semibold text-white shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-400 active:scale-[0.98]"
+            disabled={isSubmitting}
+            className="w-full cursor-pointer rounded-xl bg-emerald-500 py-3 font-semibold text-white shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            Login
+            {isSubmitting ? "Logging in..." : "Login"}
           </button>
         </form>
 
@@ -116,7 +154,7 @@ export default function LoginPage() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="flex w-full items-center justify-center gap-3 rounded-xl border border-emerald-200/20 bg-white/5 py-3 font-medium text-white transition hover:bg-white/10"
+          className="flex cursor-pointer w-full items-center justify-center gap-3 rounded-xl border border-emerald-200/20 bg-white/5 py-3 font-medium text-white transition hover:bg-white/10"
         >
           <FcGoogle className="h-5 w-5 shrink-0"/>
           Continue with Google
@@ -127,7 +165,7 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href="/registration"
-            className="font-semibold text-emerald-300 transition hover:text-white"
+            className="font-semibold cursor-pointer text-emerald-300 transition hover:text-white"
           >
             Register Now
           </Link>
