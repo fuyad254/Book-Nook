@@ -144,7 +144,7 @@ async function BookDetails({ id }: { id: string }) {
         </dl>
 
         <div className="mt-8">
-          <BorrowBookButton bookTitle={book.title} />
+          <BorrowBookButton book={book} />
         </div>
       </div>
     </article>

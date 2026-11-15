@@ -3,10 +3,13 @@ import { authClient } from "@/lib/auth-client";
 import Link from "next/link";
 
 export default function MyBooksPage() {
+ 
+
+
 
   const {data: session}= authClient.useSession()
   const user= session?.user
-  console.log(user);
+  // console.log(user);
   return (
     <section className="min-h-screen bg-linear-to-br from-green-950 via-emerald-900 to-green-950 px-4 py-16 sm:py-20">
       <div className="mx-auto w-full max-w-3xl text-center">

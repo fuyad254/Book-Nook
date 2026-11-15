@@ -1,23 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { IBook } from "@/type/book";
 
-interface BorrowBookButtonProps {
-  bookTitle: string;
+
+interface BorrowBook{
+  book: IBook;
 }
 
-const BorrowBookButton = ({ bookTitle }: BorrowBookButtonProps) => {
-  const [message, setMessage] = useState("");
+
+const BorrowBookButton = ({ book }: BorrowBook) => {
+
+const today = new Date();
+const borrowDate = today.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+});
+
+today.setDate(today.getDate() + 7);
+const returnDate= today.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+});
+
+
+
+  const {data: session} = authClient.useSession()
+  const userEmail= session?.user.email
+
+const borrowData= {
+  bookId: book._id,
+  title: book.title,
+  image: book.image,
+  userEmail: userEmail,
+  borrowDate: borrowDate,
+  returnDate: returnDate
+}
+
+const handleBorrowButton= async()=>{
+
+  console.log(borrowData);
+
+  const res= await fetch("http://localhost:5000/my-borrow",{
+      method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(borrowData)
+  })
+ const data= res.json()
+ console.log(data);
+}
+
 
   return (
     <div>
       <button
         type="button"
-        onClick={() =>
-          setMessage(
-            `Borrowing "${bookTitle}" is coming soon. The borrow system will be available shortly.`,
-          )
-        }
+        onClick={handleBorrowButton}
         className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#91c99e] px-7 py-3 text-sm font-semibold text-[#102017] shadow-lg shadow-emerald-950/30 transition hover:bg-[#a5d9af] active:scale-[0.99] sm:w-auto"
       >
         <svg
@@ -36,14 +78,8 @@ const BorrowBookButton = ({ bookTitle }: BorrowBookButtonProps) => {
         Borrow This Book
       </button>
 
-      {message && (
-        <p
-          role="status"
-          className="mt-3 rounded-xl border border-emerald-300/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100"
-        >
-          {message}
-        </p>
-      )}
+      
+      
     </div>
   );
 };

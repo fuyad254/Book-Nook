@@ -8,10 +8,9 @@ const categories = ["Fiction", "Science", "History", "Kids", "Others"];
 export default function AddBookPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState("");
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
+  const [preview] = useState("");
+  const [uploading] = useState(false);
+  const [error] = useState("");
 
   // Replace these values with your authenticated user's data.
 
