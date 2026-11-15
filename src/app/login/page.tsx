@@ -46,10 +46,13 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log("Google login clicked");
-
-    // এখানে Google authentication যুক্ত করবে
+  const handleGoogleLogin = async() => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+    if(data){
+      
+    }
   };
 
   return (
@@ -156,7 +159,7 @@ export default function LoginPage() {
           onClick={handleGoogleLogin}
           className="flex cursor-pointer w-full items-center justify-center gap-3 rounded-xl border border-emerald-200/20 bg-white/5 py-3 font-medium text-white transition hover:bg-white/10"
         >
-          <FcGoogle className="h-5 w-5 shrink-0"/>
+          <FcGoogle className="h-5 w-5 shrink-0" />
           Continue with Google
         </button>
 

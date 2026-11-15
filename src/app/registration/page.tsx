@@ -70,9 +70,13 @@ const RegisterPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Connect Google Authentication here.
-    console.log("Google Login clicked");
+  const handleGoogleLogin = async() => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+    if(data){
+      
+    }
   };
 
   return (

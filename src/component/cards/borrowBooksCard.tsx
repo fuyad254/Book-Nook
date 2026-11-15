@@ -128,10 +128,10 @@ export default function BorrowBooksCard({
                 Book
               </th>
               <th scope="col" className="px-5 py-4 font-semibold">
-                Borrowed
+                Borrow Date
               </th>
               <th scope="col" className="px-5 py-4 font-semibold">
-                Due
+                Return Date
               </th>
               <th scope="col" className="px-5 py-4 text-right font-semibold">
                 Action
