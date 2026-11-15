@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
@@ -12,86 +13,43 @@ export default function AddBookPage() {
   const [uploading] = useState(false);
   const [error] = useState("");
 
-  // Replace these values with your authenticated user's data.
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
 
-  //   if (!file) return;
+    const formData = new FormData(e.currentTarget);
 
-  //   if (!file.type.startsWith("image/")) {
-  //     setError("Please select a valid image file.");
-  //     return;
-  //   }
+    const book = Object.fromEntries(formData.entries()) as {
+      title: string;
+      author: string;
+      category: string;
+      copies: string;
+      image: string;
+      description: string;
+      name: string;
+      email: string;
+    };
 
-  //   if (file.size > 5 * 1024 * 1024) {
-  //     setError("Image size must be less than 5MB.");
-  //     return;
-  //   }
-
-  //   setError("");
-  //   setImage(file);
-  //   setPreview(URL.createObjectURL(file));
-  // };
-
-  // const uploadImage = async (file: File) => {
-  //   const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-
-  //   if (!apiKey) {
-  //     throw new Error("ImgBB API key is missing.");
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("image", file);
-
-  //   const response = await fetch(
-  //     `https://api.imgbb.com/1/upload?key=${apiKey}`,
-  //     {
-  //       method: "POST",
-  //       body: formData,
-  //     },
-  //   );
-
-  //   const result = await response.json();
-
-  //   if (!response.ok || !result.success) {
-  //     throw new Error("Image upload failed.");
-  //   }
-
-  //   return result.data.url as string;
-  // };
-
-  
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-
-  const formData = new FormData(e.currentTarget);
-
-  const book = Object.fromEntries(formData.entries()) as {
-    title: string;
-    author: string;
-    category: string;
-    copies: string;
-    image: string,
-    description: string;
-    name: string;
-    email: string;
+    const res = await fetch("http://localhost:5000/add-book", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(book),
+    });
+    const data = res.json();
+    console.log(data);
   };
 
-  const res = await fetch('http://localhost:5000/add-book', {
-    method: 'POST',
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(book)
-  })
- const data= res.json()
- console.log(data);
-};
-  
+  const { data: session } = authClient.useSession();
+    const user = session?.user;
+    
 
   const inputStyle =
     "w-full rounded-md border border-[#303a34] bg-[#19221d] px-2 py-1.5 text-[11px] text-[#dce5de] outline-none placeholder:text-[#758078] focus:border-[#91c99e]";
+
+
+
 
   const labelStyle = "mb-1 block text-[10px] font-medium text-[#d1d9d2]";
 
@@ -195,7 +153,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 ref={fileInputRef}
                 id="image"
                 name="image"
-                
                 // onChange={handleImageChange}
                 className={`${inputStyle}`}
               />
@@ -235,8 +192,9 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 id="userName"
                 type="text"
                 name="name"
-                // value={currentUser.name}
-                // readOnly
+                value={user?.name ?? ""}
+                
+                readOnly
                 className={`${inputStyle}`}
               />
             </div>
@@ -250,8 +208,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 id="userEmail"
                 type="email"
                 name="email"
-                // value={currentUser.email}
-                // readOnly
+                value={user?.email ?? ""}
+                readOnly
                 className={`${inputStyle}`}
               />
             </div>

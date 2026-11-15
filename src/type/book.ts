@@ -9,3 +9,13 @@ export interface IBook {
     name: string,
     email: string,
 }
+
+export interface IBorrow {
+    _id: string,
+    bookId: string,
+    title: string,
+    image: string,
+    userEmail: string,
+    borrowDate: string,
+    returnDate: string,
+}
