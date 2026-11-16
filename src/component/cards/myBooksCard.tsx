@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { IBook } from "@/type/book";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
 interface MyBooksCardProps {
   books: IBook[];
@@ -17,51 +18,63 @@ const actionBase =
 
 const viewStyles =
   "border-emerald-300/25 bg-emerald-400/10 text-emerald-100 hover:border-emerald-300/50 hover:bg-emerald-400/20";
+
 const editStyles =
   "border-sky-300/25 bg-sky-400/10 text-sky-100 hover:border-sky-300/50 hover:bg-sky-400/20";
+
 const deleteStyles =
   "border-red-400/25 bg-red-500/10 text-red-200 hover:border-red-400/50 hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60";
 
 export default function MyBooksCard({ books }: MyBooksCardProps) {
   const router = useRouter();
+
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedBook, setSelectedBook] = useState<IBook | null>(null);
 
-  const handleDelete = async (book: IBook) => {
-    if (deletingId) {
-      return;
-    }
+  // Open confirmation popup
+  const handleDelete = (book: IBook) => {
+    if (deletingId) return;
+    setSelectedBook(book);
+  };
 
-    const confirmed = window.confirm(
-      `Delete "${book.title}"? This cannot be undone.`,
-    );
+  // Confirm and delete book
+  const confirmDelete = async () => {
+    if (!selectedBook || deletingId) return;
 
-    if (!confirmed) {
-      return;
-    }
-
-    setDeletingId(book._id);
+    setDeletingId(selectedBook._id);
     setError(null);
 
     try {
-      // NOTE: assumed endpoint. If the backend exposes a different route,
-      // update only this line.
-      const res = await fetch(`${API_URL}/my-books/${book._id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${API_URL}/my-books/${selectedBook._id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) {
         throw new Error(`Could not delete this book (${res.status}).`);
       }
 
+      setSelectedBook(null);
       router.refresh();
+
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Something went wrong. Try again.",
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Try again."
       );
     } finally {
       setDeletingId(null);
     }
+  };
+
+  // Close popup
+  const cancelDelete = () => {
+    if (deletingId) return;
+    setSelectedBook(null);
   };
 
   if (books.length === 0) {
@@ -70,7 +83,9 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-400/10 text-2xl">
           📚
         </span>
-        <p className="mt-4 text-lg font-semibold text-white">No books yet</p>
+        <p className="mt-4 text-lg font-semibold text-white">
+          No books yet
+        </p>
         <p className="mt-2 text-sm text-emerald-100/70">
           Be the first to share a book with the community.
         </p>
@@ -129,7 +144,9 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
                   </div>
                 </td>
 
-                <td className="px-5 py-4 text-emerald-100/70">{book.author}</td>
+                <td className="px-5 py-4 text-emerald-100/70">
+                  {book.author}
+                </td>
 
                 <td className="px-5 py-4 text-emerald-100/70">
                   {book.copies}
@@ -139,6 +156,7 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
                   <div className="flex flex-wrap items-center justify-end gap-2">
                     <ViewLink id={book._id} title={book.title} />
                     <EditLink id={book._id} title={book.title} />
+
                     <DeleteButton
                       book={book}
                       isDeleting={deletingId === book._id}
@@ -162,8 +180,12 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
           >
             <div className="flex gap-4">
               <Cover book={book} />
+
               <div className="min-w-0 flex-1">
-                <p className="font-semibold text-white">{book.title}</p>
+                <p className="font-semibold text-white">
+                  {book.title}
+                </p>
+
                 {book.category ? (
                   <CategoryBadge category={book.category} />
                 ) : null}
@@ -171,19 +193,34 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
                 <dl className="mt-3 space-y-1 text-xs">
                   <div className="flex items-center justify-between gap-3">
                     <dt className="text-emerald-100/60">Author</dt>
-                    <dd className="text-emerald-100/90">{book.author}</dd>
+                    <dd className="text-emerald-100/90">
+                      {book.author}
+                    </dd>
                   </div>
+
                   <div className="flex items-center justify-between gap-3">
                     <dt className="text-emerald-100/60">Copies</dt>
-                    <dd className="text-emerald-100/90">{book.copies}</dd>
+                    <dd className="text-emerald-100/90">
+                      {book.copies}
+                    </dd>
                   </div>
                 </dl>
               </div>
             </div>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <ViewLink id={book._id} title={book.title} fullWidth />
-              <EditLink id={book._id} title={book.title} fullWidth />
+              <ViewLink
+                id={book._id}
+                title={book.title}
+                fullWidth
+              />
+
+              <EditLink
+                id={book._id}
+                title={book.title}
+                fullWidth
+              />
+
               <DeleteButton
                 book={book}
                 isDeleting={deletingId === book._id}
@@ -195,10 +232,93 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
           </li>
         ))}
       </ul>
+
+      {/* Delete Confirmation Popup */}
+      {selectedBook && (
+        <div
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+          onClick={cancelDelete}
+        >
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="delete-dialog-title"
+            aria-describedby="delete-dialog-description"
+            className="w-full max-w-md rounded-2xl border border-emerald-300/15 bg-[#151f19] p-6 shadow-2xl shadow-black/40 animate-in fade-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Warning Icon */}
+            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10">
+              <svg
+                className="h-7 w-7 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.8}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3m0 4h.01M5.07 19h13.86c1.54 0 2.5-1.67 1.73-3L13.73 4c-.77-1.33-2.69-1.33-3.46 0L3.34 16c-.77 1.33.19 3 1.73 3z"
+                />
+              </svg>
+            </div>
+
+            {/* Title */}
+            <h2
+              id="delete-dialog-title"
+              className="text-xl font-bold text-white"
+            >
+              Are you sure?
+            </h2>
+
+            {/* Description */}
+            <p
+              id="delete-dialog-description"
+              className="mt-3 text-sm leading-6 text-emerald-100/70"
+            >
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-white">
+                {selectedBook.title}
+              </span>
+              ? This action cannot be undone.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="mt-7 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={cancelDelete}
+                disabled={!!deletingId}
+                className="rounded-full border border-emerald-300/20 bg-emerald-400/5 px-5 py-2.5 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-400/10 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmDelete}
+                disabled={!!deletingId}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-red-400/30 bg-red-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deletingId ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
+// Book Cover
 function Cover({ book }: { book: IBook }) {
   if (!book.image) {
     return (
@@ -220,6 +340,7 @@ function Cover({ book }: { book: IBook }) {
   );
 }
 
+// Category Badge
 function CategoryBadge({ category }: { category: string }) {
   return (
     <span className="mt-2 inline-flex rounded-full border border-emerald-300/25 bg-emerald-400/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-200">
@@ -228,6 +349,7 @@ function CategoryBadge({ category }: { category: string }) {
   );
 }
 
+// View Link
 function ViewLink({
   id,
   title,
@@ -261,6 +383,7 @@ function ViewLink({
   );
 }
 
+// Edit Link
 function EditLink({
   id,
   title,
@@ -294,6 +417,7 @@ function EditLink({
   );
 }
 
+// Delete Button
 interface DeleteButtonProps {
   book: IBook;
   isDeleting: boolean;
@@ -315,7 +439,7 @@ function DeleteButton({
       onClick={() => onDelete(book)}
       disabled={disabled}
       aria-label={`Delete ${book.title}`}
-      className={`${actionBase} ${deleteStyles} ${fullWidth ? "w-full" : ""}`}
+      className={`${actionBase} ${deleteStyles} ${fullWidth ? "w-full " : "cursor-pointer"}`}
     >
       {isDeleting ? (
         <>
