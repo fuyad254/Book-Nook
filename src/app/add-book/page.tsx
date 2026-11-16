@@ -4,7 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-const categories = ["Fiction", "Science", "History", "Kids", "Others"];
+const categories = ["Fiction", "Science", "History", "Kids", "Productivity", "Others","Spirituality","Personal Development", "Classic","Self-Help"];
 
 export default function AddBookPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
