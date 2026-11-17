@@ -224,12 +224,21 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
     } finally {
       setSubmitting(false);
     }
+
+    const res= await fetch(`${API_URL}/my-borrow/${book._id}`,{
+      method:"PATCH",
+      });
+    console.log(res);
   };
+  
 
   return (
     <div>
       {/* Borrow Button */}
-      <button
+      
+    
+
+        <button
         type="button"
         onClick={() => setOpen(true)}
         disabled={borrowed || isPending || checking}
@@ -239,7 +248,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
             : "cursor-pointer bg-[#91c99e] text-[#102017] shadow-emerald-950/30 hover:bg-[#a5d9af] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         }`}
       >
-        {borrowed ? (
+        {borrowed? (
           "Already Borrowed"
         ) : checking ? (
           "Checking…"
@@ -435,18 +444,8 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
                 </p>
               )}
 
-              {/* Login Message */}
-              {!user?.email && !isPending && (
-                <p className="text-xs text-emerald-100/60">
-                  You need an account to borrow.{" "}
-                  <a
-                    href={`/login?next=/book/${book._id}`}
-                    className="font-semibold text-emerald-300 underline-offset-2 hover:underline"
-                  >
-                    Sign in
-                  </a>
-                </p>
-              )}
+             
+              
 
               {/* Action Buttons */}
               <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-end">

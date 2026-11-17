@@ -17,7 +17,7 @@ export default function AllBooksLoading() {
               key={index}
               className="overflow-hidden rounded-2xl border border-emerald-300/10 bg-[#151f19]"
             >
-              <div className="aspect-[3/4] w-full animate-pulse bg-emerald-900/60" />
+              <div className="aspect-3/4 w-full animate-pulse bg-emerald-900/60" />
 
               <div className="space-y-3 p-5">
                 <div className="h-4 w-3/4 animate-pulse rounded bg-emerald-900/60" />

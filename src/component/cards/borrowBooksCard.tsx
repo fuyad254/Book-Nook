@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { IBorrow } from "@/type/book";
 
@@ -40,7 +39,10 @@ function getDueStatus(returnDate: string, now: Date): DueStatus | null {
   const daysLeft = Math.round((startOfDay(due) - startOfDay(now)) / DAY_MS);
 
   if (daysLeft < 0) {
-    return { label: `Overdue by ${Math.abs(daysLeft)}d`, tone: "overdue" };
+    return {
+      label: `Overdue by ${Math.abs(daysLeft)}d`,
+      tone: "overdue",
+    };
   }
 
   if (daysLeft === 0) {
@@ -57,32 +59,43 @@ export default function BorrowBooksCard({
   borrowBooks,
   today,
 }: BorrowBooksCardProps) {
-  const router = useRouter();
+
   const [returningId, setReturningId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const now = new Date(today);
 
-  const handleReturnBook = async (id: string) => {
+  const handleReturnBook = async (book: IBorrow) => {
     if (returningId) {
       return;
     }
 
-    setReturningId(id);
+    setReturningId(book._id);
     setError(null);
 
     try {
-      // NOTE: mirrors the POST /my-borrow route used when borrowing. If the
-      // backend exposes a different return route, update only this line.
-      const res = await fetch(`${API_URL}/my-borrow/${id}`, {
+      const patchRes = await fetch(
+        `${API_URL}/my-borrow/${book._id}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      if (!patchRes.ok) {
+        throw new Error(
+          `Could not update book copies (${patchRes.status}).`,
+        );
+      }
+
+      const deleteRes = await fetch(`${API_URL}/my-borrow/${book._id}`, {
         method: "DELETE",
       });
 
-      if (!res.ok) {
-        throw new Error(`Could not return this book (${res.status}).`);
+      if (!deleteRes.ok) {
+        throw new Error(`Could not return this book (${deleteRes.status}).`);
       }
 
-      router.refresh();
+      window.location.reload();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Something went wrong. Try again.",
@@ -90,6 +103,11 @@ export default function BorrowBooksCard({
     } finally {
       setReturningId(null);
     }
+
+    const res= await fetch(`${API_URL}/my-borrow-return/${book.bookId}`,{
+      method :"PATCH"
+    })
+    console.log(res);
   };
 
   if (borrowBooks.length === 0) {
@@ -98,9 +116,11 @@ export default function BorrowBooksCard({
         <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-400/10 text-2xl">
           📖
         </span>
+
         <p className="mt-4 text-lg font-semibold text-white">
           No borrowed books yet
         </p>
+
         <p className="mt-2 text-sm text-emerald-100/70">
           Books you borrow will show up here with their return dates.
         </p>
@@ -152,10 +172,12 @@ export default function BorrowBooksCard({
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-4">
                       <Cover book={book} />
+
                       <div className="min-w-0">
                         <p className="truncate font-semibold text-white">
                           {book.title}
                         </p>
+
                         {status ? <DueBadge status={status} /> : null}
                       </div>
                     </div>
@@ -171,7 +193,7 @@ export default function BorrowBooksCard({
 
                   <td className="px-5 py-4 text-right">
                     <ReturnButton
-                      id={book._id}
+                      book={book}
                       isReturning={isReturning}
                       disabled={returningId !== null}
                       onReturn={handleReturnBook}
@@ -197,8 +219,10 @@ export default function BorrowBooksCard({
             >
               <div className="flex gap-4">
                 <Cover book={book} />
+
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-white">{book.title}</p>
+
                   {status ? <DueBadge status={status} /> : null}
 
                   <dl className="mt-3 space-y-1 text-xs">
@@ -206,6 +230,7 @@ export default function BorrowBooksCard({
                       <dt className="text-emerald-100/60">Borrowed</dt>
                       <dd className="text-emerald-100/90">{book.borrowDate}</dd>
                     </div>
+
                     <div className="flex items-center justify-between gap-3">
                       <dt className="text-emerald-100/60">Due</dt>
                       <dd className="text-emerald-100/90">{book.returnDate}</dd>
@@ -216,7 +241,7 @@ export default function BorrowBooksCard({
 
               <div className="mt-4">
                 <ReturnButton
-                  id={book._id}
+                  book={book}
                   isReturning={isReturning}
                   disabled={returningId !== null}
                   onReturn={handleReturnBook}
@@ -263,15 +288,15 @@ function DueBadge({ status }: { status: DueStatus }) {
 }
 
 interface ReturnButtonProps {
-  id: string;
+  book: IBorrow;
   isReturning: boolean;
   disabled: boolean;
-  onReturn: (id: string) => void;
+  onReturn: (book: IBorrow) => void;
   fullWidth?: boolean;
 }
 
 function ReturnButton({
-  id,
+  book,
   isReturning,
   disabled,
   onReturn,
@@ -280,7 +305,7 @@ function ReturnButton({
   return (
     <button
       type="button"
-      onClick={() => onReturn(id)}
+      onClick={() => onReturn(book)}
       disabled={disabled}
       className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border border-emerald-300/25 bg-emerald-400/10 px-4 py-2 text-xs font-semibold text-emerald-100 transition hover:border-emerald-300/50 hover:bg-emerald-400/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 disabled:cursor-not-allowed disabled:opacity-60 ${
         fullWidth ? "w-full" : ""

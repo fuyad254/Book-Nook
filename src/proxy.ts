@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-const protectedRoutes = ["/add-book", "/my-books", "/my-borrows", "/profile"];
+const protectedRoutes = ["/add-book", "/my-books", "/my-borrows", "/profile", "/book"];
 const authRoutes = ["/login", "/registration"];
 
 const matchesRoute = (pathname: string, routes: string[]) =>
@@ -36,6 +36,7 @@ export const config = {
     "/my-books/:path*",
     "/my-borrows/:path*",
     "/profile/:path*",
+    "/book/:path*",
     "/login",
     "/registration",
   ],

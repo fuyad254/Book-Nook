@@ -10,24 +10,21 @@ export default function AddBookPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [preview] = useState("");
-  const [uploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
+  setUploading(true);
 
+  try {
     const formData = new FormData(e.currentTarget);
 
-    const book = Object.fromEntries(formData.entries()) as {
-      title: string;
-      author: string;
-      category: string;
-      copies: string;
-      image: string;
-      description: string;
-      name: string;
-      email: string;
+    const book = {
+      ...Object.fromEntries(formData.entries()),
+      copies: Number(formData.get("copies")),
     };
 
     const res = await fetch("http://localhost:5000/add-book", {
@@ -37,9 +34,20 @@ export default function AddBookPage() {
       },
       body: JSON.stringify(book),
     });
-    const data = res.json();
-    console.log(data);
-  };
+
+    if (!res.ok) {
+      throw new Error("Failed to add book!");
+    }
+
+    window.location.reload();
+
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const { data: session } = authClient.useSession();
     const user = session?.user;
@@ -226,7 +234,7 @@ export default function AddBookPage() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full rounded-md bg-[#91c99e] py-2 text-[11px] font-semibold text-[#102017] transition hover:bg-[#a5d9af] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-md cursor-pointer bg-[#91c99e] py-2 text-[11px] font-semibold text-[#102017] transition hover:bg-[#a5d9af] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {uploading ? "Uploading..." : "Add Book"}
               </button>

@@ -1,8 +1,10 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import BorrowBookButton from "@/component/Button/borrowBookButton";
+import { auth } from "@/lib/auth";
 import type { IBook } from "@/type/book";
 
 const API_URL = "http://localhost:5000";
@@ -71,6 +73,15 @@ export default function BookPage({ params }: BookPageProps) {
 }
 
 async function BookDetails({ id }: { id: string }) {
+  // The proxy check is optimistic; always validate the session on the server.
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.user) {
+    redirect(`/login?next=/book/${id}`);
+  }
+
   const book = await getBook(id).catch(() => null);
 
   if (!book) {
@@ -108,7 +119,8 @@ async function BookDetails({ id }: { id: string }) {
         </h1>
 
         <p className="mt-3 text-lg text-emerald-100/70">
-          by <span className="font-semibold text-emerald-200">{book.author}</span>
+          by{" "}
+          <span className="font-semibold text-emerald-200">{book.author}</span>
         </p>
 
         <p className="mt-6 text-sm leading-7 text-emerald-50/80 sm:text-base">
@@ -143,9 +155,16 @@ async function BookDetails({ id }: { id: string }) {
           </div>
         </dl>
 
-        <div className="mt-8">
-          <BorrowBookButton book={book} />
-        </div>
+        {book.copies > 0 ? (
+          <div className="mt-8">
+            <BorrowBookButton book={book} />
+          </div>
+        ) : (
+          <button
+            disabled={true}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-semibold shadow-lg transition sm:w-auto cursor-not-allowed bg-gray-500 text-white opacity-70"
+          >Not available to borrow now</button>
+        )}
       </div>
     </article>
   );
