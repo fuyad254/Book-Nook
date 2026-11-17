@@ -14,7 +14,16 @@ type BookPageProps = {
 };
 
 async function getBook(id: string): Promise<IBook | null> {
-  const res = await fetch(`${API_URL}/book/${id}`);
+
+  const jwtToken= await auth.api.getToken({
+    headers: await headers()
+  })
+
+  const res = await fetch(`${API_URL}/book/${id}`,{
+    headers: {
+      authorization: `Bearer ${jwtToken?.token}`
+    }
+  });
 
   if (!res.ok) {
     return null;

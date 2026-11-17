@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { IBook } from "@/type/book";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
@@ -63,10 +64,13 @@ const EditBookButton = ({ book }: { book: IBook }) => {
     try {
       setUploading(true);
 
+      const {data}= await authClient.token()
+
       const res = await fetch(`http://localhost:5000/my-books/${book._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${data?.token}`
         },
         body: JSON.stringify(editBook),
       });

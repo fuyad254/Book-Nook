@@ -27,10 +27,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       copies: Number(formData.get("copies")),
     };
 
+    const {data} = await authClient.token()
+
+
     const res = await fetch("http://localhost:5000/add-book", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${data?.token}`
       },
       body: JSON.stringify(book),
     });

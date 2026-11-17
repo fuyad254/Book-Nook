@@ -82,9 +82,14 @@ async function BorrowsList() {
 }
 
 async function getBorrows(email: string): Promise<IBorrow[] | null> {
+  const jwtToken= await auth.api.getToken({
+    headers: await headers()
+  })
   try {
     const res = await fetch(
-      `${API_URL}/borrows/${encodeURIComponent(email)}`,
+      `${API_URL}/borrows/${encodeURIComponent(email),{
+        authorization: `Bearer ${jwtToken?.token}`
+      }}`,
       { cache: "no-store" },
     );
 
