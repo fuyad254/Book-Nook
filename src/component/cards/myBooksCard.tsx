@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import type { IBook } from "@/type/book";
 import EditBookButton from "../Button/editBookButton";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface MyBooksCardProps {
   books: IBook[];

@@ -70,7 +70,7 @@ const EditBookButton = ({ book }: { book: IBook }) => {
 
       const {data}= await authClient.token()
 
-      const res = await fetch(`http://localhost:5000/my-books/${book._id}`, {
+      const res = await fetch(`${process.env.SERVER_BASE_API_URL}/my-books/${book._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

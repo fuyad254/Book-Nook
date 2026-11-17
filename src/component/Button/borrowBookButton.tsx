@@ -7,8 +7,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import type { IBook } from "@/type/book";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface BorrowBookProps {
   book: IBook;
@@ -40,8 +39,7 @@ function getBorrowDates(): {
 const fieldStyle =
   "w-full rounded-md border border-[#303a34] bg-[#19221d] px-3 py-2 text-sm text-[#dce5de] outline-none";
 
-const labelStyle =
-  "mb-1 block text-xs font-medium text-emerald-200/80";
+const labelStyle = "mb-1 block text-xs font-medium text-emerald-200/80";
 
 const BorrowBookButton = ({ book }: BorrowBookProps) => {
   const router = useRouter();
@@ -160,9 +158,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
   }, [open, submitting]);
 
   // Handle borrow submit
-  const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!email || submitting || borrowed) {
@@ -225,7 +221,6 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
 
       // Refresh page data
       router.refresh();
-
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Something went wrong. Try again.";
@@ -235,20 +230,17 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
       setSubmitting(false);
     }
 
-    const res= await fetch(`${API_URL}/my-borrow/${book._id}`,{
-      method:"PATCH",
-      });
+    const res = await fetch(`${API_URL}/my-borrow/${book._id}`, {
+      method: "PATCH",
+    });
     console.log(res);
   };
-  
 
   return (
     <div>
       {/* Borrow Button */}
-      
-    
 
-        <button
+      <button
         type="button"
         onClick={() => setOpen(true)}
         disabled={borrowed || isPending || checking}
@@ -258,7 +250,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
             : "cursor-pointer bg-[#91c99e] text-[#102017] shadow-emerald-950/30 hover:bg-[#a5d9af] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70"
         }`}
       >
-        {borrowed? (
+        {borrowed ? (
           "Already Borrowed"
         ) : checking ? (
           "Checking…"
@@ -277,7 +269,6 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
               <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5Z" />
               <path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20" />
             </svg>
-
             Borrow This Book
           </>
         )}
@@ -360,16 +351,10 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
             </div>
 
             {/* Form */}
-            <form
-              onSubmit={handleSubmit}
-              className="mt-6 space-y-4"
-            >
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               {/* User Name */}
               <div>
-                <label
-                  htmlFor="borrow-name"
-                  className={labelStyle}
-                >
+                <label htmlFor="borrow-name" className={labelStyle}>
                   User Name
                 </label>
 
@@ -385,10 +370,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
 
               {/* Email */}
               <div>
-                <label
-                  htmlFor="borrow-email"
-                  className={labelStyle}
-                >
+                <label htmlFor="borrow-email" className={labelStyle}>
                   Email
                 </label>
 
@@ -405,10 +387,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
               {/* Dates */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label
-                    htmlFor="borrow-date"
-                    className={labelStyle}
-                  >
+                  <label htmlFor="borrow-date" className={labelStyle}>
                     Borrow Date
                   </label>
 
@@ -422,10 +401,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="return-date"
-                    className={labelStyle}
-                  >
+                  <label htmlFor="return-date" className={labelStyle}>
                     Return Date
                   </label>
 
@@ -434,11 +410,11 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
                     name="returnDate"
                     type="date"
                     required
-                    defaultValue={new Date(
-                      new Date().setDate(new Date().getDate() + 7)
-                    )
-                      .toISOString()
-                      .split("T")[0]}
+                    defaultValue={
+                      new Date(new Date().setDate(new Date().getDate() + 7))
+                        .toISOString()
+                        .split("T")[0]
+                    }
                     className={`${fieldStyle} text-emerald-100/80`}
                   />
                 </div>
@@ -454,9 +430,6 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
                 </p>
               )}
 
-             
-              
-
               {/* Action Buttons */}
               <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:justify-end">
                 <button
@@ -470,11 +443,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
 
                 <button
                   type="submit"
-                  disabled={
-                    submitting ||
-                    !user?.email ||
-                    borrowed
-                  }
+                  disabled={submitting || !user?.email || borrowed}
                   className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#91c99e] px-6 py-2.5 text-sm font-semibold text-[#102017] transition hover:bg-[#a5d9af] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting ? (

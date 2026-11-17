@@ -6,7 +6,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import type { IBorrow } from "@/type/book";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface BorrowBooksCardProps {
   borrowBooks: IBorrow[];

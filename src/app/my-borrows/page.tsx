@@ -7,7 +7,7 @@ import BorrowBooksCard from "@/component/cards/borrowBooksCard";
 import { auth } from "@/lib/auth";
 import type { IBorrow } from "@/type/book";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const API_URL = process.env.SERVER_BASE_API_URL;
 
 export const metadata: Metadata = {
   title: "My Borrows",
