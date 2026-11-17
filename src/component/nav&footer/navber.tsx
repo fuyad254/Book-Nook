@@ -43,7 +43,7 @@ const Navbar = () => {
             width={60}
             height={60}
             alt="Book Nook"
-            priority
+            loading="eager"
             className="h-12 w-12 object-contain drop-shadow-[0_2px_10px_rgba(167,243,208,0.25)]"
           />
 

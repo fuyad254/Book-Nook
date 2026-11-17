@@ -83,15 +83,19 @@ async function BooksList() {
 
 async function getBooks(email: string): Promise<IBook[] | null> {
 
-  const jwtToken= await auth.api.getToken({
-      headers: await headers()
-    })
+  const jwtToken = await auth.api.getToken({
+    headers: await headers(),
+  });
+
   try {
     const res = await fetch(
-      `${API_URL}/my-books/${encodeURIComponent(email),{
-        authorization: `Bearer ${jwtToken?.token}`
-      }}`,
-      { cache: "no-store" },
+      `${API_URL}/my-books/${encodeURIComponent(email)}`,
+      {
+        headers: {
+          authorization: `Bearer ${jwtToken.token}`,
+        },
+        cache: "no-store",
+      },
     );
 
     if (!res.ok) {

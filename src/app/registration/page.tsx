@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
 const RegisterPage = () => {
@@ -31,7 +32,9 @@ const RegisterPage = () => {
     e.preventDefault();
 
     if (!isPasswordValid) {
-      setPasswordError("Please enter a valid password.");
+      const message = "Please enter a valid password.";
+      setPasswordError(message);
+      toast.error(message);
       return;
     }
 
@@ -57,25 +60,34 @@ const RegisterPage = () => {
       });
 
       if (error) {
-        setSubmitError(
-          error.message || "Could not create your account. Please try again.",
-        );
+        const message =
+          error.message || "Could not create your account. Please try again.";
+        setSubmitError(message);
+        toast.error(message);
         return;
       }
 
+      toast.success("Account created! Welcome to Book Nook.");
       router.replace("/");
       router.refresh();
+    } catch {
+      toast.error("Could not create your account. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleGoogleLogin = async() => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
-    if(data){
-      
+  const handleGoogleLogin = async () => {
+    try {
+      const { error: socialError } = await authClient.signIn.social({
+        provider: "google",
+      });
+
+      if (socialError) {
+        toast.error(socialError.message || "Could not sign in with Google.");
+      }
+    } catch {
+      toast.error("Could not sign in with Google. Please try again.");
     }
   };
 

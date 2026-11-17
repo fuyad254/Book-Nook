@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import type { IBook } from "@/type/book";
 import EditBookButton from "../Button/editBookButton";
 
@@ -52,11 +53,13 @@ export default function MyBooksCard({ books }: MyBooksCardProps) {
       }
 
       setSelectedBook(null);
+      toast.success("Book deleted successfully!");
       router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Something went wrong. Try again.",
-      );
+      const message =
+        err instanceof Error ? err.message : "Something went wrong. Try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setDeletingId(null);
     }

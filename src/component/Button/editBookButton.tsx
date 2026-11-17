@@ -3,7 +3,9 @@
 import { authClient } from "@/lib/auth-client";
 import { IBook } from "@/type/book";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const categories = [
   "Fiction",
@@ -19,6 +21,7 @@ const categories = [
 ];
 
 const EditBookButton = ({ book }: { book: IBook }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const labelStyle = "mb-1 block text-[10px] font-medium text-[#d1d9d2]";
   const inputStyle =
@@ -58,6 +61,7 @@ const EditBookButton = ({ book }: { book: IBook }) => {
 
     if (!hasChanges) {
       setSuccess("No changes detected!");
+      toast("No changes detected.");
       return;
     }
 
@@ -80,10 +84,14 @@ const EditBookButton = ({ book }: { book: IBook }) => {
       }
 
       setSuccess("Book updated successfully!");
-
-      window.location.reload();
+      toast.success("Book updated successfully!");
+      setIsOpen(false);
+      router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong!");
+      const message =
+        err instanceof Error ? err.message : "Something went wrong!";
+      setError(message);
+      toast.error(message);
     } finally {
       setUploading(false);
     }

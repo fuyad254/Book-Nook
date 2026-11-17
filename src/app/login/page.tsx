@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
@@ -33,25 +34,36 @@ export default function LoginPage() {
       });
 
       if (signInError) {
-        setError(signInError.message || "Invalid email or password.");
+        const message = signInError.message || "Invalid email or password.";
+        setError(message);
+        toast.error(message);
         return;
       }
+
+      toast.success("Welcome back!");
 
       // The proxy adds ?next= when it redirects unauthenticated users here.
       const next = new URLSearchParams(window.location.search).get("next");
       router.replace(next && next.startsWith("/") ? next : "/");
       router.refresh();
+    } catch {
+      toast.error("Could not sign in. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleGoogleLogin = async() => {
-    const data = await authClient.signIn.social({
-      provider: "google",
-    });
-    if(data){
-      
+  const handleGoogleLogin = async () => {
+    try {
+      const { error: socialError } = await authClient.signIn.social({
+        provider: "google",
+      });
+
+      if (socialError) {
+        toast.error(socialError.message || "Could not sign in with Google.");
+      }
+    } catch {
+      toast.error("Could not sign in with Google. Please try again.");
     }
   };
 

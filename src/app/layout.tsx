@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navber from "@/component/nav&footer/navber";
 import Footer from "@/component/nav&footer/footer";
+import AppToaster from "@/component/toast/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </Suspense>
         <main className="flex-1 pt-16 md:pt-20">{children}</main>
         <Footer />
+        <AppToaster />
       </body>
     </html>
   );

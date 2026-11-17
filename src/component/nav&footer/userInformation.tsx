@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
 type NavbarUser = {
@@ -60,15 +61,19 @@ const UserInformationPage = ({ user }: { user: NavbarUser }) => {
       const { error } = await authClient.signOut();
 
       if (error) {
-        setSignOutError(
-          error.message || "Could not sign you out. Please try again.",
-        );
+        const message =
+          error.message || "Could not sign you out. Please try again.";
+        setSignOutError(message);
+        toast.error(message);
         return;
       }
 
+      toast.success("You have been signed out.");
       setIsOpen(false);
       router.replace("/");
       router.refresh();
+    } catch {
+      toast.error("Could not sign you out. Please try again.");
     } finally {
       setIsSigningOut(false);
     }

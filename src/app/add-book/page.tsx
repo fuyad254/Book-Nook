@@ -2,11 +2,14 @@
 
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const categories = ["Fiction", "Science", "History", "Kids", "Productivity", "Others","Spirituality","Personal Development", "Classic","Self-Help"];
 
 export default function AddBookPage() {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [preview] = useState("");
@@ -20,7 +23,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   setUploading(true);
 
   try {
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
     const book = {
       ...Object.fromEntries(formData.entries()),
@@ -43,10 +47,15 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       throw new Error("Failed to add book!");
     }
 
-    window.location.reload();
-
+    toast.success("Book added to your shelf!");
+    form.reset();
+    router.refresh();
   } catch (error) {
-    console.error(error);
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : "Failed to add book. Please try again.",
+    );
   } finally {
     setUploading(false);
   }

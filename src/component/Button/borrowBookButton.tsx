@@ -4,6 +4,7 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import type { IBook } from "@/type/book";
 
 const API_URL =
@@ -84,9 +85,17 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
 
     const loadBorrowStatus = async () => {
       try {
+        const { data: tokenData } = await authClient.token();
+
         const res = await fetch(
           `${API_URL}/borrows/${encodeURIComponent(email)}`,
-          { cache: "no-store", signal: controller.signal }
+          {
+            headers: {
+              authorization: `Bearer ${tokenData?.token}`,
+            },
+            cache: "no-store",
+            signal: controller.signal,
+          },
         );
 
         if (!res.ok) throw new Error(`Failed (${res.status})`);
@@ -212,15 +221,16 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
 
       setError(null);
 
+      toast.success("Book borrowed successfully!");
+
       // Refresh page data
       router.refresh();
 
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Something went wrong. Try again."
-      );
+      const message =
+        err instanceof Error ? err.message : "Something went wrong. Try again.";
+      setError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
