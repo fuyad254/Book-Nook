@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "@/lib/api";
 
 const categories = ["Fiction", "Science", "History", "Kids", "Productivity", "Others","Spirituality","Personal Development", "Classic","Self-Help"];
 
@@ -34,7 +35,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const {data} = await authClient.token()
 
 
-    const res = await fetch(`${process.env.SERVER_BASE_API_URL}/add-book`, {
+    const res = await fetch(`${API_URL}/add-book`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

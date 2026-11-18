@@ -2,8 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import type { IBook } from "@/type/book";
 import LatestBookCard from "../cards/latestBookCard";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+import { API_URL } from "@/lib/api";
 
 async function getLatestBooks(): Promise<IBook[]> {
   try {

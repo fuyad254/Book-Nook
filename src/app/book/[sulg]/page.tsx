@@ -4,10 +4,9 @@ import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import BorrowBookButton from "@/component/Button/borrowBookButton";
+import { API_URL } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import type { IBook } from "@/type/book";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 type BookPageProps = {
   params: Promise<{ sulg: string }>;

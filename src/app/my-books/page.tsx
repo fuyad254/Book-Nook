@@ -4,10 +4,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import MyBooksCard from "@/component/cards/myBooksCard";
+import { API_URL } from "@/lib/api";
 import { auth } from "@/lib/auth";
 import type { IBook } from "@/type/book";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 export const metadata: Metadata = {
   title: "My Books",

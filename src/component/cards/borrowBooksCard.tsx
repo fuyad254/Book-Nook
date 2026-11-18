@@ -4,9 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "@/lib/api";
 import type { IBorrow } from "@/type/book";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface BorrowBooksCardProps {
   borrowBooks: IBorrow[];
@@ -77,12 +76,15 @@ export default function BorrowBooksCard({
     setError(null);
 
     try {
+      // `book.bookId` is the book whose copies must be restored, while
+      // `book._id` is the borrow record that must be removed.
       const patchRes = await fetch(
-        `${API_URL}/my-borrow/${book._id}`,
+        `${API_URL}/my-borrow-return/${book.bookId}`,
         {
-          method: "DELETE",
+          method: "PATCH",
         },
       );
+      
 
       if (!patchRes.ok) {
         throw new Error(
@@ -108,11 +110,6 @@ export default function BorrowBooksCard({
     } finally {
       setReturningId(null);
     }
-
-    const res= await fetch(`${API_URL}/my-borrow-return/${book.bookId}`,{
-      method :"PATCH"
-    })
-    console.log(res);
   };
 
   if (borrowBooks.length === 0) {

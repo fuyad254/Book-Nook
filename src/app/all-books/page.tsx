@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import AllBookCard from "@/component/cards/allBookCard";
+import { API_URL } from "@/lib/api";
 import type { IBook } from "@/type/book";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 export const metadata: Metadata = {
   title: "All Books",

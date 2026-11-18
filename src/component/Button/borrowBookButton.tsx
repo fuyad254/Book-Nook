@@ -5,9 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "@/lib/api";
 import type { IBook } from "@/type/book";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface BorrowBookProps {
   book: IBook;
@@ -86,7 +85,7 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
         const { data: tokenData } = await authClient.token();
 
         const res = await fetch(
-          `${API_URL}/borrows/${encodeURIComponent(email)}`,
+          `${API_URL}/borrows/${email}`,
           {
             headers: {
               authorization: `Bearer ${tokenData?.token}`,
@@ -209,6 +208,17 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
         throw new Error(message);
       }
 
+      // Decrease available copies only after the borrow record was created.
+      const copiesRes = await fetch(`${API_URL}/my-borrow/${book._id}`, {
+        method: "PATCH",
+      });
+
+      if (!copiesRes.ok) {
+        throw new Error(
+          "Book borrowed, but the available copies could not be updated.",
+        );
+      }
+
       // Borrow successful
       setJustBorrowed(true);
 
@@ -229,11 +239,6 @@ const BorrowBookButton = ({ book }: BorrowBookProps) => {
     } finally {
       setSubmitting(false);
     }
-
-    const res = await fetch(`${API_URL}/my-borrow/${book._id}`, {
-      method: "PATCH",
-    });
-    console.log(res);
   };
 
   return (

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "@/lib/api";
 
 const categories = [
   "Fiction",
@@ -70,7 +71,7 @@ const EditBookButton = ({ book }: { book: IBook }) => {
 
       const {data}= await authClient.token()
 
-      const res = await fetch(`${process.env.SERVER_BASE_API_URL}/my-books/${book._id}`, {
+      const res = await fetch(`${API_URL}/my-books/${book._id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

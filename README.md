@@ -157,7 +157,9 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 | `MONGODB_CONNECT_URI` | `src/lib/auth.ts` | MongoDB connection for auth collections |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | `src/lib/auth.ts` | Google OAuth credentials |
 | `NEXT_PUBLIC_BETTER_AUTH_URL` | `src/lib/auth-client.ts` | Browser auth base URL; falls back to current origin |
-| `NEXT_PUBLIC_API_URL` | API call sites | Express API base URL; defaults to `http://localhost:5000` |
+| `NEXT_PUBLIC_API_URL` | `src/lib/api.ts` (used by all API call sites) | Express API base URL; defaults to `http://localhost:5000` |
+
+All frontend fetches import `API_URL` from `src/lib/api.ts`. Use the `NEXT_PUBLIC_` prefix: Client Components cannot read server-only variables, which otherwise produces requests to `/undefined/...` on the frontend origin.
 
 The API project (`../book-nook-sever`) has its own `.env` with `MONGODB_URI` pointing at the same database.
 
@@ -320,7 +322,8 @@ npm run build
 ## Deployment notes
 
 - Set all environment variables in the hosting provider; never commit `.env`.
-- Deploy the Express API first and set `NEXT_PUBLIC_API_URL` to its public URL.
+- Deploy the Express API first and set `NEXT_PUBLIC_API_URL` to its public URL. `NEXT_PUBLIC_*` values are inlined at build time, so **redeploy after changing them**.
+- The API also needs `CLIENT_URL` set to the deployed frontend origin so it can fetch `<CLIENT_URL>/api/auth/jwks` for JWT verification.
 - The API's JWKS URL (`<BETTER_AUTH_URL>/api/auth/jwks`) must be publicly reachable and must match the frontend origin.
 - Configure CORS on the API for the deployed frontend origin.
 - Add the production Google OAuth callback URL in Google Cloud Console.

@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { API_URL } from "@/lib/api";
 import type { IBook } from "@/type/book";
 import EditBookButton from "../Button/editBookButton";
-
-const API_URL = process.env.SERVER_BASE_API_URL;
 
 interface MyBooksCardProps {
   books: IBook[];
