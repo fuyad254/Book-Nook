@@ -1,22 +1,12 @@
 # 📚 Book Nook
 
-\<p align="center">
-&#x20; \<strong>A community-powered library to discover, share, borrow, and return books.\</strong>
-\</p>
+<p align="center">
+&#x20; <strong>A community-powered library to discover, share, borrow, and return books.</strong>
+</p>
 
-\<p align="center">
-&#x20; \<a href="[https://book-nook-seven.vercel.app/](https://book-nook-seven.vercel.app/)">
-&#x20;   \<img src="[https://img.shields.io/badge/LIVE-DEMO-2E7D32?style=for-the-badge&logo=vercel&logoColor=white](https://img.shields.io/badge/LIVE-DEMO-2E7D32?style=for-the-badge\&logo=vercel\&logoColor=white)" alt="Live Demo" />
-&#x20; \</a>
-&#x20; \<a href="[https://github.com/fuyad254/Book-Nook](https://github.com/fuyad254/Book-Nook)">
-&#x20;   \<img src="[https://img.shields.io/badge/FRONTEND-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white](https://img.shields.io/badge/FRONTEND-GITHUB-181717?style=for-the-badge\&logo=github\&logoColor=white)" alt="Frontend Repository" />
-&#x20; \</a>
-&#x20; \<a href="[https://github.com/fuyad254/Book-Nook-Server](https://github.com/fuyad254/Book-Nook-Server)">
-&#x20;   \<img src="[https://img.shields.io/badge/BACKEND-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white](https://img.shields.io/badge/BACKEND-GITHUB-181717?style=for-the-badge\&logo=github\&logoColor=white)" alt="Backend Repository" />
-&#x20; \</a>
-\</p>
+<p align="center">   <a href="https://book-nook-seven.vercel.app/">        <img src="https://img.shields.io/badge/LIVE-DEMO-2E7D32?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo" />   </a>   <a href="https://github.com/fuyad254/Book-Nook">     <img src="https://img.shields.io/badge/FRONTEND-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white" alt="Frontend Repository" />   </a>   <a href="https://github.com/fuyad254/Book-Nook-Server">     <img src="https://img.shields.io/badge/BACKEND-GITHUB-181717?style=for-the-badge&logo=github&logoColor=white" alt="Backend Repository" />   </a> </p>
 
----
+------
 
 ## 🌟 About The Project
 
@@ -48,18 +38,21 @@ With a clean interface, secure authentication, and responsive design, Book Nook 
 
 ## 🛠️ Technologies Used
 
-### Frontend
+Frontend
 
-\<p>   \<img src="[https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white](https://img.shields.io/badge/Next.js-000000?style=for-the-badge\&logo=next.js\&logoColor=white)" />   \<img src="[https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB](https://img.shields.io/badge/React-20232A?style=for-the-badge\&logo=react\&logoColor=61DAFB)" />   \<img src="[https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge\&logo=typescript\&logoColor=white)" />   \<img src="[https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge\&logo=tailwindcss\&logoColor=white)" /> \</p>
+<p>   <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white" />   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />   <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" /> </p>
 
-### Backend & Authentication
+Backend & Authentication
 
-\<p>   \<img src="[https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white](https://img.shields.io/badge/Node.js-339933?style=for-the-badge\&logo=node.js\&logoColor=white)" />   \<img src="[https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white](https://img.shields.io/badge/Express.js-000000?style=for-the-badge\&logo=express\&logoColor=white)" />   \<img src="[https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge\&logo=mongodb\&logoColor=white)" />   \<img src="[https://img.shields.io/badge/Better_Auth-5A67D8?style=for-the-badge](https://img.shields.io/badge/Better_Auth-5A67D8?style=for-the-badge)" /> \</p>
+<p>   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" />   <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" />   <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white" />   <img src="https://img.shields.io/badge/Better_Auth-5A67D8?style=for-the-badge" /> </p>
 
-- **Authentication:** Better Auth, Google OAuth, JWT
-- **Database:** MongoDB
-- **API Security:** JWT verification with JWKS
-- **Libraries:** Swiper, React Icons, react-hot-toast
+Authentication: Better Auth, Google OAuth, JWT
+
+Database: MongoDB
+
+API Security: JWT verification with JWKS
+
+Libraries: Swiper, React Icons, react-hot-toast
 
 ## 📄 Application Pages
 
@@ -77,14 +70,15 @@ With a clean interface, secure authentication, and responsive design, Book Nook 
 
 ## 🏗️ Project Architecture
 
-\`\`\`mermaid
+```mermaid
 flowchart TD
 A[👤 User / Browser] --> B[⚛️ Next.js Frontend]
 B --> C[🔐 Better Auth]
 B -->|JWT Bearer Token| D[🚀 Express REST API]
 D --> E[🛡️ JWT Verification]
 E --> F[(🍃 MongoDB Database)]
-\`\`\`
+```
+
 
 ## 🚀 Getting Started
 
