@@ -97,37 +97,37 @@ Make sure you have installed:
 
 **Frontend:**
 
-\`\`\`bash
+```bash
 git clone [https://github.com/fuyad254/Book-Nook.git](https://github.com/fuyad254/Book-Nook.git)
-\`\`\`
+```
 
 **Backend:**
 
-\`\`\`bash
+```bash
 git clone [https://github.com/fuyad254/Book-Nook-Server.git](https://github.com/fuyad254/Book-Nook-Server.git)
-\`\`\`
+```
 
 ### 2️⃣ Install dependencies
 
 **Frontend:**
 
-\`\`\`bash
+```bash
 cd Book-Nook
 npm install
-\`\`\`
+```
 
 **Backend** (open a separate terminal):
 
-\`\`\`bash
+```bash
 cd Book-Nook-Server
 npm install
-\`\`\`
+```
 
 ### 3️⃣ Configure environment variables
 
 Create a `.env` file in the frontend root directory:
 
-\`\`\`env
+```env
 BETTER_AUTH_SECRET=your-long-random-secret
 BETTER_AUTH_URL=[http://localhost:3000](http://localhost:3000)
 MONGODB_CONNECT_URI=your-mongodb-connection-string
@@ -137,8 +137,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 NEXT_PUBLIC_BETTER_AUTH_URL=[http://localhost:3000](http://localhost:3000)
 NEXT_PUBLIC_API_URL=[http://localhost:5000](http://localhost:5000)
-\`\`\`
-
+```
 Configure the backend `.env` file with the required database connection and client origin settings.
 
 > ⚠️ Never commit your real credentials, API keys, or environment variables to GitHub.
@@ -147,17 +146,17 @@ Configure the backend `.env` file with the required database connection and clie
 
 Start the backend server:
 
-\`\`\`bash
+```bash
 cd Book-Nook-Server
 npx nodemon index.js
-\`\`\`
+```
 
 Start the frontend in another terminal:
 
-\`\`\`bash
+```bash
 cd Book-Nook
 npm run dev
-\`\`\`
+```
 
 Open your browser and visit:
 
@@ -188,6 +187,6 @@ Open your browser and visit:
 **Fuyad**
 Frontend Developer
 
-\<p align="center">
+<p align="center">
 &#x20; ⭐ If you like Book Nook, don't forget to star the repository!
-\</p>
+</p>
